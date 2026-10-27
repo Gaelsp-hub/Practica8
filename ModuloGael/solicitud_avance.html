@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Módulo de Solicitudes - Avance (Sin BD)</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f9;
+            margin: 0;
+            padding: 20px;
+        }
+        .contenedor {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        h2, h3 {
+            color: #8B0000; /* Color institucional tipo UPQ */
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        select, textarea, button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #1a252f;
+            color: white;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #34495e;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #1a252f;
+            color: white;
+        }
+        .estado-pendiente {
+            color: #d35400;
+            font-weight: bold;
+        }
+        #mensajeAlerta {
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="contenedor">
+        <h2>Módulo de Solicitudes (Avance Frontend)</h2>
+        <p>Registro preliminar de solicitudes de soporte técnico sin conexión a base de datos.</p>
+
+        <div id="mensajeAlerta"></div>
+
+        <!-- Formulario de Registro -->
+        <form id="formSolicitud" onsubmit="registrarSolicitud(event)">
+            <label for="selectUsuario">Solicitante (Usuario):</label>
+            <select id="selectUsuario" required>
+                <option value="">Seleccione un usuario...</option>
+                <!-- Datos simulados del Módulo 1 -->
+                <option value="Ana López">Ana López (Docente)</option>
+                <option value="Carlos Pérez">Carlos Pérez (Alumno)</option>
+                <option value="María Gómez">María Gómez (Administrativo)</option>
+            </select>
+
+            <label for="selectEquipo">Equipo:</label>
+            <select id="selectEquipo" required>
+                <option value="">Seleccione un equipo...</option>
+                <!-- Datos simulados del Módulo 1 -->
+                <option value="Laptop Dell Latitude">Laptop Dell Latitude (EQ-001)</option>
+                <option value="Proyector Epson">Proyector Epson (EQ-002)</option>
+                <option value="PC Escritorio HP">PC Escritorio HP (EQ-003)</option>
+            </select>
+
+            <label for="descripcion">Descripción del Problema:</label>
+            <textarea id="descripcion" rows="3" placeholder="Describa brevemente la falla..." required></textarea>
+
+            <button type="submit">Registrar Solicitud</button>
+        </form>
+
+        <hr>
+
+        <!-- Tabla de Solicitudes -->
+        <h3>Listado de Solicitudes Registradas</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Solicitante</th>
+                    <th>Equipo</th>
+                    <th>Descripción</th>
+                    <th>Estado</th>
+                </tr>
+             dulces</thead>
+            <tbody id="tablaSolicitudes">
+                <tr>
+                    <td colspan="5" style="text-align: center;">No hay solicitudes registradas en esta sesión.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        // Array en memoria para almacenar las solicitudes temporalmente
+        let listaSolicitudes = [];
+        let contadorId = 1;
+
+        function registrarSolicitud(event) {
+            event.preventDefault(); // Evita que la página se recargue
+
+            // Obtener valores del formulario
+            let usuario = document.getElementById("selectUsuario").value;
+            let equipo = document.getElementById("selectEquipo").value;
+            let descripcion = document.getElementById("descripcion").value;
+            let alerta = document.getElementById("mensajeAlerta");
+
+            // Crear el objeto solicitud con estado inicial "Pendiente"
+            let nuevaSolicitud = {
+                id: contadorId++,
+                usuario: usuario,
+                equipo: equipo,
+                descripcion: descripcion,
+                estado: "Pendiente" // Requerimiento de la práctica
+            };
+
+            // Agregar al arreglo
+            listaSolicitudes.push(nuevaSolicitud);
+
+            // Mostrar mensaje de éxito
+            alerta.style.color = "green";
+            alerta.innerText = "¡Solicitud registrada correctamente (Modo avance)!";
+
+            // Limpiar formulario
+            document.getElementById("formSolicitud").reset();
+
+            // Actualizar la tabla visualmente
+            actualizarTabla();
+        }
+
+        function actualizarTabla() {
+            let tbody = document.getElementById("tablaSolicitudes");
+            tbody.innerHTML = "";
+
+            if (listaSolicitudes.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" style="text-align: center;">No hay solicitudes registradas en esta sesión.</td></tr>`;
+                return;
+            }
+
+            // Recorrer el arreglo para pintar cada fila
+            listaSolicitudes.forEach(sol => {
+                let fila = `<tr>
+                    <td>${sol.id}</td>
+                    <td>${sol.usuario}</td>
+                    <td>${sol.equipo}</td>
+                    <td>${sol.descripcion}</td>
+                    <td><span class="estado-pendiente">${sol.estado}</span></td>
+                </tr>`;
+                tbody.innerHTML += fila;
+            });
+        }
+    </script>
+</body>
+</html>
